@@ -52,11 +52,11 @@ use RegistersUsers;
                     'password' => [
                         'required',
                         'min:8',
+                        'regex:/^.*(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*(_|[^\w])).*$/',
                         'confirmed',
-                        'regex:/^.*(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*(_|[^\w])).*$/'
                     ],
                     'phone' => 'numeric',
-                    'terms' => 'required'
+                    'terms' => 'accepted'
         ]);
     }
 
@@ -71,11 +71,11 @@ use RegistersUsers;
                     'name' => $data['name'],
                     'email' => $data['email'],
                     'password' => bcrypt($data['password']),
-                    'confirmed_email' => '0',
                     'phone' => $data['phone'],
-                    'terms' => '0'
+                    'terms' => ($data['terms'] == 'on') ? 1 : 0,
+                    'terms_accepted_datetime' => ($data['terms'] == 'on') ? date('Y-m-d H:i:s') : NULL
         ]);
-
+        
 //        Mail::to($data['email'])->send(new WelcomeMail($user));
 
         return $user;

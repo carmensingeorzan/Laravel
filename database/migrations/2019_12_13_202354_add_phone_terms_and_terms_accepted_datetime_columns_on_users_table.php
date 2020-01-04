@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class AddPhoneAndTermsColumnsOnUsersTable extends Migration {
+class AddPhoneTermsAndTermsAcceptedDatetimeColumnsOnUsersTable extends Migration {
 
     /**
      * Run the migrations.
@@ -16,6 +16,8 @@ class AddPhoneAndTermsColumnsOnUsersTable extends Migration {
         Schema::table('users', function (Blueprint $table) {
             $table->integer('phone')->after('password');
             $table->boolean('terms')->after('phone')->default('0');
+            $table->timestamp('terms_accepted_datetime')->after('terms')->nullable();
+            
         });
     }
 
@@ -31,6 +33,9 @@ class AddPhoneAndTermsColumnsOnUsersTable extends Migration {
             }
             if (Schema::hasColumn('users', 'terms')) {
                 $table->dropColumn('terms');
+            }
+            if (Schema::hasColumn('users', 'terms_accepted_datetime')) {
+                $table->dropColumn('terms_accepted_datetime');
             }
         });
     }

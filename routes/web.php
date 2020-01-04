@@ -17,6 +17,15 @@ Route::get('/', function () {
 
 Auth::routes();
 
-Route::get('/home', 'HomeController@index')->name('home');
-Route::get('/edit', 'UserController@edit')->name('edit');
-Route::get('/update', 'UserController@update')->name('update');
+Route::get('/home', 'UserController@index')->name('home');
+
+Route::get('/user/edit/{id}', 'UserController@edit')->name('edit');
+Route::post('/user/update/{id}', 'UserController@update')->name('update');
+Route::delete('/user/delete/{id}', 'UserController@destroy')->name('delete');
+Route::get('/user/unverify/{id}', 'UserController@unverify')->name('unverify');
+
+Route::get('/search', 'SearchController@search')->name('search');
+
+Route::get('/terms', 'TermsController@terms')->name('terms');
+Route::get('/terms/add', 'TermsController@add')->name('terms/add');
+Route::post('/terms/create', 'TermsController@create')->name('terms/create');
