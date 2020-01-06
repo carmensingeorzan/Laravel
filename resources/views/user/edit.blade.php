@@ -53,6 +53,13 @@
                         </div>
 
                         <div class="form-group{{ $errors->has('terms') ? ' has-error' : '' }}">
+                            <div style="margin-left:100px">
+                                @if ($add_message)
+                                {{ $add_message }} 
+                                You can accept current published terms <a href="{{ route('user/accept', ['user_id' => $user->id]) }}">here</a>.
+                                You can view current published term <a href="{{ route('terms/showLatest') }}" target="_blank">here</a>.
+                                @endif
+                            </div>
                             <div style="margin-left:160px">
                                 <label class="control-label">
                                     @if ($user->terms)
@@ -60,7 +67,7 @@
                                     @else
                                     <input type="checkbox" name="terms">
                                     @endif
-                                    <a href="{{ route('terms') }}" target="_blank">Terms of Service</a>
+                                    <a href="{{ route('terms/view', ['id' => $user->term_id]) }}" target="_blank">Terms of Service</a>
                                 </label>
                             </div>
 

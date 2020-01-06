@@ -67,12 +67,16 @@ use RegistersUsers;
      * @return \App\User
      */
     protected function create(array $data) {
+        
+        $term = TermService::latest('publication_date')->first();
+        
         $user = User::create([
                     'name' => $data['name'],
                     'email' => $data['email'],
                     'password' => bcrypt($data['password']),
                     'phone' => $data['phone'],
                     'terms' => ($data['terms'] == 'on') ? 1 : 0,
+                    'term_id' => $term->id,
                     'terms_accepted_datetime' => ($data['terms'] == 'on') ? date('Y-m-d H:i:s') : NULL
         ]);
         

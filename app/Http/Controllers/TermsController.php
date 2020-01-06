@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\TermService;
+use App\Http\Controllers\DB;
 
 class TermsController extends Controller {
 
@@ -13,6 +14,14 @@ class TermsController extends Controller {
     public function show() {
         $terms = TermService::all();
         return view('terms/show', array('terms' => $terms));
+    }
+
+    /**
+     * Show the application terms page.
+     */
+    public function showLatest() {
+        $term = TermService::latest('publication_date')->first();
+        return view('terms/show_latest_term', array('term' => $term));
     }
 
     /**
@@ -44,6 +53,12 @@ class TermsController extends Controller {
         $term->save();
 
         return redirect('terms/show')->with('success', 'Term has been published!');
+    }
+
+    public function view($id) {
+
+        $term = TermService::find($id);
+        return view('terms/show_latest_term', array('term' => $term));
     }
 
     public function edit($id) {

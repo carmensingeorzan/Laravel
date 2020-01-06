@@ -23,10 +23,13 @@ Route::get('/user/edit/{id}', 'UserController@edit')->name('edit');
 Route::post('/user/update/{id}', 'UserController@update')->name('update');
 Route::delete('/user/delete/{id}', 'UserController@destroy')->name('delete');
 Route::get('/user/unverify/{id}', 'UserController@unverify')->name('unverify');
+Route::get('/user/accept/{user_id}', 'UserController@accept')->name('user/accept');
 
 Route::get('/search', 'SearchController@search')->name('search');
 
+Route::get('/terms/showLatest', 'TermsController@showLatest')->name('terms/showLatest');
 Route::get('/terms/show', 'TermsController@show')->name('terms/show');
+Route::get('/terms/view/{id}', 'TermsController@view')->name('terms/view');
 Route::get('/terms/add', 'TermsController@add')->name('terms/add');
 Route::post('/terms/create', 'TermsController@create')->name('terms/create');
 Route::get('/terms/publish/{id}', 'TermsController@publish')->name('terms/publish');

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\User;
+use App\TermService;
 
 class UserController extends Controller {
 
@@ -31,8 +32,15 @@ class UserController extends Controller {
      */
     public function edit($id) {
 
+        $term = TermService::latest('publication_date')->first();
         $user = User::find($id);
-        return view('user/edit', array('user' => $user));
+
+        $add_message = '';
+        if ($term->id != $user->term_id) {
+            $add_message = 'You have accepted an oldest term service.';
+        };
+
+        return view('user/edit', array('user' => $user, 'add_message' => $add_message));
     }
 
     /**
@@ -83,4 +91,16 @@ class UserController extends Controller {
 
         return back()->with('success', 'The user email status set as unverified!');
     }
+
+    public function accept($user_id) {
+        
+        $term = TermService::latest('publication_date')->first();
+        
+        $user = User::find($user_id);
+        $user->term_id = $term->id;
+        $user->save();
+        
+        return back()->with('success', 'The current published term was accepted!');
+    }
+
 }
