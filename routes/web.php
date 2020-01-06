@@ -26,6 +26,10 @@ Route::get('/user/unverify/{id}', 'UserController@unverify')->name('unverify');
 
 Route::get('/search', 'SearchController@search')->name('search');
 
-Route::get('/terms', 'TermsController@terms')->name('terms');
+Route::get('/terms/show', 'TermsController@show')->name('terms/show');
 Route::get('/terms/add', 'TermsController@add')->name('terms/add');
 Route::post('/terms/create', 'TermsController@create')->name('terms/create');
+Route::get('/terms/publish/{id}', 'TermsController@publish')->name('terms/publish');
+Route::get('/terms/edit/{id}', 'TermsController@edit')->name('terms/edit');
+Route::post('/terms/update/{id}', 'TermsController@update')->name('terms/update');
+Route::get('/terms/delete/{id}', 'TermsController@delete')->name('terms/delete');
