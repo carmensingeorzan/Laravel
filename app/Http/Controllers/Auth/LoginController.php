@@ -57,28 +57,7 @@ use AuthenticatesUsers;
 
         $this->validate($request, $rules, []);
     }
-
-    public function confirmEmail($email) {
-        $user = User::where('email', $email)->first();
-        $name = $user->name;
-
-        $data = array('url' => url("/acceptEmail/{$user->id}"));
-
-        Mail::send('emails.confirm_mail', $data, function($message) use ($name, $email) {
-            $message->to($email, $name)->subject('Laravel Confirm Email Address');
-            $message->from('carmen.test.send.email@gmail.com', 'Laravel Site');
-        });
-
-        return back()->with('success', 'The email has been sent to ' . $email . '!');
-    }
-
-    public funcTion acceptEmail($id) {
-        $user = User::find($id);
-        $user->confirmed_email = 1;
-        $user->save();
-        return redirect('/')->with('success', 'The email ' . $user->email . ' has been confirmed!');
-    }
-
+    
     public function maxAttempts() {
         return property_exists($this, 'maxAttempts') ? $this->maxAttempts : 5;
     }

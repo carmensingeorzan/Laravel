@@ -3,13 +3,9 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
-
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Foundation\Auth\RegistersUsers;
 use Illuminate\Support\Facades\Mail;
-
-use App\Mail\WelcomeMail;
-
 use App\User;
 use App\TermService;
 
@@ -71,9 +67,9 @@ use RegistersUsers;
      * @return \App\User
      */
     protected function create(array $data) {
-        
+
         $term = TermService::latest('publication_date')->first();
-        
+
         $user = User::create([
                     'name' => $data['name'],
                     'email' => $data['email'],
@@ -83,8 +79,16 @@ use RegistersUsers;
                     'term_id' => $term->id,
                     'terms_accepted_datetime' => ($data['terms'] == 'on') ? date('Y-m-d H:i:s') : NULL
         ]);
+
+        $name = $data['name'];
+        $email = $data['email'];
         
-//        Mail::to($data['email'])->send(new WelcomeMail($user));
+        $d = array('url' => url("/acceptEmail/{$user->id}"));
+
+        Mail::send('emails.confirm_mail', $d, function($message) use ($name, $email) {
+            $message->to($email, $name)->subject('Laravel Confirm Email Address');
+            $message->from('carmen.test.send.email@gmail.com', 'Laravel Site');
+        });
 
         return $user;
     }

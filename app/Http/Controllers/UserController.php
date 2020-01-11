@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Mail;
 use App\User;
 use App\TermService;
 use Auth;
@@ -56,22 +57,47 @@ class UserController extends Controller {
      * @params $request, $id
      */
     public function update(Request $request, $id) {
+
+        $flag = false;
+
         $this->validate($request, [
             'name' => 'required|string|max:255',
-//            'email' => 'required|string|email|max:255|unique:users',
+            'email' => 'required|string|email|max:255|unique:users,email,' . $id,
             'phone' => 'numeric',
             'terms' => 'required'
         ]);
 
         $user = User::find($id);
         $user->name = request('name');
-        $user->email = request('email');
+
+        if ($user->email != request('email')) {
+            $user->confirmed_email = 0;
+            $user->email = request('email');
+            $flag = true;
+        } else {
+            $user->email = request('email');
+        }
         $user->phone = request('phone');
         $user->terms = (request('terms') == 'on') ? 1 : 0;
         $user->terms_accepted_datetime = ((request('terms') == 'on') && ($user->terms_accepted_datetime == NULL)) ? date('Y-m-d H:i:s') : $user->terms_accepted_datetime;
         $user->save();
 
-        return redirect('home')->with('success', 'User ' . request('name') . ' has successfully updated!');
+        $flash_message = 'User ' . request('name') . ' has successfully updated!';
+
+        if ($flag) {
+            $name = request('name');
+            $email = request('email');
+
+            $d = array('url' => url("/acceptEmail/{$user->id}"));
+
+            Mail::send('emails.confirm_mail', $d, function($message) use ($name, $email) {
+                $message->to($email, $name)->subject('Laravel Confirm Email Address');
+                $message->from('carmen.test.send.email@gmail.com', 'Laravel Site');
+            });
+            $flash_message = $flash_message . " " . $email . " need to confirm the email address.";
+        }
+
+        return redirect('home')->with('success', $flash_message);
     }
 
     /**
