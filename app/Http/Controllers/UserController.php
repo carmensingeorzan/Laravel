@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\User;
 use App\TermService;
+use Auth;
 
 class UserController extends Controller {
 
@@ -20,9 +21,15 @@ class UserController extends Controller {
     /**
      * Show the application dashboard.
      */
-    public function index() {
-        $users = User::all();
-        return view('user/home', array('users' => $users));
+    public function index(Request $request) {
+        $user = auth()->user();
+        if ($user->confirmed_email) {
+            $users = User::all();
+            return view('user/home', array('users' => $users));
+        } else {
+            Auth::logout();
+            return redirect()->route('login', ['email' => $user->email]);
+        }
     }
 
     /**
@@ -93,13 +100,13 @@ class UserController extends Controller {
     }
 
     public function accept($user_id) {
-        
+
         $term = TermService::latest('publication_date')->first();
-        
+
         $user = User::find($user_id);
         $user->term_id = $term->id;
         $user->save();
-        
+
         return back()->with('success', 'The current published term was accepted!');
     }
 

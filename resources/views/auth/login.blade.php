@@ -8,6 +8,12 @@
                 <div class="panel-heading">Login</div>
 
                 <div class="panel-body">
+                    @if ($message = Session::get('success'))
+                    <div class="alert alert-success alert-block">
+                        <button type="button" class="close" data-dismiss="alert">×</button>	
+                        <strong>{{ $message }}</strong>
+                    </div>
+                    @endif
                     <form class="form-horizontal" method="POST" action="{{ route('login') }}">
                         {{ csrf_field() }}
 
@@ -15,7 +21,15 @@
                             <label for="email" class="col-md-4 control-label">E-Mail Address</label>
 
                             <div class="col-md-6">
-                                <input id="email" type="email" class="form-control" name="email" value="{{ old('email') }}" autofocus>
+                                <?php
+                                if (@$_GET['email'] && !old('email')) {
+                                    ?>
+                                    <input id="email" type="email" class="form-control" name="email" value="{{ $_GET['email'] }}" autofocus>
+                                <?php } else { ?>
+                                    <input id="email" type="email" class="form-control" name="email" value="{{ old('email') }}" autofocus>
+                                    <?php
+                                }
+                                ?>
 
                                 @if ($errors->has('email'))
                                 <span class="help-block">
@@ -38,15 +52,25 @@
                                 @endif
                             </div>
                         </div>
-
-                        <div class="{{ $errors->has('confirmed_email') ? ' has-error' : '' }}">
-                            @if ($errors->has('confirmed_email'))
-                            <span class="help-block">
-                                <strong>{!! $errors->first('confirmed_email') !!}</strong>
-                            </span>
-                            @endif
-                        </div>
-
+                        <?php
+                        if (@$_GET['email'] || old('email')) {
+                            if (old('email')) {
+                                $user = App\User::where('email', old('email'))->first();
+                            } else {
+                                $user = App\User::where('email', $_GET['email'])->first();
+                            }
+                            echo $user->confirmed_email;
+                            if ($user && !$user->confirmed_email) {
+                                ?>
+                                <div class="has-error">
+                                    <span class="help-block">
+                                        <strong>This email address is not verified. Click <a href='<?php echo url("/confirmEmail/{$user->email}"); ?>'>here</a> to resend the activation email</strong>
+                                    </span>
+                                </div>
+                                <?php
+                            }
+                        }
+                        ?>
                         <div class="form-group">
                             <div class="col-md-6 col-md-offset-4">
                                 <div class="checkbox">

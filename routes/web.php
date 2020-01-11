@@ -17,6 +17,9 @@ Route::get('/', function () {
 
 Auth::routes();
 
+Route::get('/confirmEmail/{email}', 'Auth\LoginController@confirmEmail')->name('confirmEmail');
+Route::get('/acceptEmail/{id}', 'Auth\LoginController@acceptEmail')->name('acceptEmail');
+
 Route::get('/home', 'UserController@index')->name('home');
 
 Route::get('/user/edit/{id}', 'UserController@edit')->name('edit');

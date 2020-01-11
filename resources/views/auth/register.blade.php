@@ -79,7 +79,7 @@
                             <div style="margin-left:160px">
                                 <label class="control-label">
                                     <input type="checkbox" name="terms" {{ old('terms') ? 'checked' : '' }}> 
-                                    <a href="{{ route('terms') }}" target="_blank">Terms of Service</a>
+                                    <a href="{{ route('terms/showLatest') }}" target="_blank">Terms of Service</a>
                                 </label>
                             </div>
 

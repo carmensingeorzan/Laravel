@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Auth;
 use App\Http\Controllers\Controller;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Mail;
+use App\User;
 
 class LoginController extends Controller {
     /*
@@ -26,12 +28,12 @@ use AuthenticatesUsers;
      * @var string
      */
     protected $redirectTo = '/home';
-    
+
     /**
      * user has unsuccessfully tried to login 10 times
      */
     protected $maxAttempts = 10;
-    
+
     /**
      * blocked from logging in for 30 seconds
      */
@@ -51,14 +53,30 @@ use AuthenticatesUsers;
         $rules = [
             $this->username() => 'required',
             'password' => 'required',
-//            'confirmed_email' => 'accepted'
         ];
 
-        $customMessages = [
-            'accepted' => 'This email address is not verified. Click <a href="#">here</a> to resend the activation email'
-        ];
+        $this->validate($request, $rules, []);
+    }
 
-        $this->validate($request, $rules, $customMessages);
+    public function confirmEmail($email) {
+        $user = User::where('email', $email)->first();
+        $name = $user->name;
+
+        $data = array('url' => url("/acceptEmail/{$user->id}"));
+
+        Mail::send('emails.confirm_mail', $data, function($message) use ($name, $email) {
+            $message->to($email, $name)->subject('Laravel Confirm Email Address');
+            $message->from('carmen.test.send.email@gmail.com', 'Laravel Site');
+        });
+
+        return back()->with('success', 'The email has been sent to ' . $email . '!');
+    }
+
+    public funcTion acceptEmail($id) {
+        $user = User::find($id);
+        $user->confirmed_email = 1;
+        $user->save();
+        return redirect('/')->with('success', 'The email ' . $user->email . ' has been confirmed!');
     }
 
     public function maxAttempts() {
