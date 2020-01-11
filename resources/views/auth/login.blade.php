@@ -59,7 +59,6 @@
                             } else {
                                 $user = App\User::where('email', $_GET['email'])->first();
                             }
-                            echo $user->confirmed_email;
                             if ($user && !$user->confirmed_email) {
                                 ?>
                                 <div class="has-error">
