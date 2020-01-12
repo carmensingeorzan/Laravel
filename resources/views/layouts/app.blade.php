@@ -54,9 +54,15 @@
 
                                 <ul class="dropdown-menu" role="menu">
                                     <li>
+                                        <a href="{{ route('home') }}">Dashboard</a>
+                                    </li>
+                                    <li>
+                                        <a href="{{ route('terms/show') }}">Terms Service</a>
+                                    </li>
+                                    <li>
                                         <a href="{{ route('logout') }}"
                                            onclick="event.preventDefault();
-                                                    document.getElementById('logout-form').submit();">
+                                                   document.getElementById('logout-form').submit();">
                                             Logout
                                         </a>
 

@@ -24,7 +24,7 @@ class UserController extends Controller {
      */
     public function index(Request $request) {
         $user = auth()->user();
-        if ($user->confirmed_email) {
+        if ($user && $user->confirmed_email) {
             $users = User::all();
             return view('user/home', array('users' => $users));
         } else {
