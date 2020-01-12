@@ -18,10 +18,11 @@ Route::get('/', function () {
 Auth::routes();
 
 Route::get('/confirmEmail/{email}', 'MailController@confirmEmail')->name('confirmEmail');
-Route::get('/acceptEmail/{id}', 'MailController@acceptEmail')->name('acceptEmail');
+Route::get('/updatedTermEmail/{id}', 'MailController@updatedTermEmail')->name('updatedTermEmail');
 
 Route::get('/home', 'UserController@index')->name('home');
 
+Route::get('/acceptEmail/{id}', 'UserController@acceptEmail')->name('acceptEmail');
 Route::get('/user/edit/{id}', 'UserController@edit')->name('edit');
 Route::post('/user/update/{id}', 'UserController@update')->name('update');
 Route::delete('/user/delete/{id}', 'UserController@destroy')->name('delete');

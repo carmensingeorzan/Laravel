@@ -3,8 +3,9 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Mail;
 use App\TermService;
-use App\Http\Controllers\DB;
+use App\User;
 
 class TermsController extends Controller {
 
@@ -75,7 +76,24 @@ class TermsController extends Controller {
         $term->publication_date = (request('published') == 'on') ? date('Y-m-d H:i:s') : $term->publication_date;
         $term->save();
 
-        return redirect('terms/show')->with('success', 'Term ' . $request->administrative_name . ' has successfully updated!');
+        $users = User::all();
+        foreach ($users as $user) {
+
+            $name = $user->name;
+            $email = $user->email;
+
+            $d = array(
+                'url_updated_term' => url("/terms/view/{$id}"),
+                'url_latest_term' => url("/terms/showLatest")
+            );
+
+            Mail::send('emails.updated_term_mail', $d, function($message) use ($name, $email) {
+                $message->to($email, $name)->subject('Laravel Updated Term');
+                $message->from('carmen.test.send.email@gmail.com', 'Laravel Site');
+            });
+        }
+        
+        return redirect('terms/show')->with('success', 'Term ' . $term->administrative_name . ' has successfully updated! An email has sent to all users.');
     }
 
     /**

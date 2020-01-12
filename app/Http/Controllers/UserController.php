@@ -135,5 +135,14 @@ class UserController extends Controller {
 
         return back()->with('success', 'The current published term was accepted!');
     }
+    
+    public funcTion acceptEmail($id) {
+        $user = User::find($id);
+        $user->confirmed_email = 1;
+        $user->save();
+        
+        Auth::loginUsingId($id);
+        return redirect('/home')->with('success', 'The email ' . $user->email . ' has been confirmed!');
+    }
 
 }
