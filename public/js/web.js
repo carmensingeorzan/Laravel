@@ -1,4 +1,4 @@
-$(".deleteProduct").click(function () {
+$(document).on("click", ".deleteProduct", function () {
     var id = $(this).data("id");
     var token = $(this).data("token");
     $.ajax(

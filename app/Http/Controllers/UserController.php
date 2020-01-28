@@ -106,9 +106,15 @@ class UserController extends Controller {
      * @params $id
      */
     public function destroy($id) {
-        User::find($id)->delete();
+        $user = Auth::user();
+        if ($user->id != $id) {
+            User::find($id)->delete();
+            return response()->json([
+                        'success' => true
+            ]);
+        }
         return response()->json([
-                    'success' => true
+                    'success' => false
         ]);
     }
 
@@ -135,12 +141,12 @@ class UserController extends Controller {
 
         return back()->with('success', 'The current published term was accepted!');
     }
-    
+
     public funcTion acceptEmail($id) {
         $user = User::find($id);
         $user->confirmed_email = 1;
         $user->save();
-        
+
         Auth::loginUsingId($id);
         return redirect('/home')->with('success', 'The email ' . $user->email . ' has been confirmed!');
     }
